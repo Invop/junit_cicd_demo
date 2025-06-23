@@ -29,6 +29,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Check gradle version
+        run: ./gradlew --version
+
   checkstyle:
     needs: install
     runs-on: ubuntu-latest
