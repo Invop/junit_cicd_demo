@@ -18,7 +18,6 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -28,6 +27,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run Checkstyle checks
         run: ./gradlew checkstyleMain checkstyleTest
@@ -38,7 +39,6 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -47,6 +47,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Run tests
         run: ./gradlew test
