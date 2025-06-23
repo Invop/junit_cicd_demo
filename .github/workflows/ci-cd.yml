@@ -13,6 +13,8 @@ env:
 jobs:
   install:
     runs-on: ubuntu-latest
+    outputs:
+      gradle-cache-key: ${{ steps.cache.outputs.cache-primary-key }}
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -29,6 +31,7 @@ jobs:
           gradle-version: ${{ env.GRADLE_VERSION }}
 
       - name: Cache Gradle dependencies
+        id: cache
         uses: actions/cache@v4
         with:
           path: |
@@ -51,29 +54,13 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: ${{ env.DISTRIBUTION }}
-          java-version: '21'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
-
-      - name: Cache Gradle dependencies
+      - name: Restore Java and Gradle setup
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+          key: ${{ needs.install.outputs.gradle-cache-key }}
 
       - name: Run Checkstyle checks
         run: ./gradlew checkstyleMain checkstyleTest
@@ -85,29 +72,13 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: ${{ env.DISTRIBUTION }}
-          java-version: '21'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
-
-      - name: Cache Gradle dependencies
+      - name: Restore Java and Gradle setup
         uses: actions/cache@v4
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
+          key: ${{ needs.install.outputs.gradle-cache-key }}
 
       - name: Run tests
         run: ./gradlew test
