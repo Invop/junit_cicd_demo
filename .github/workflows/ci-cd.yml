@@ -8,19 +8,18 @@ on:
     branches: ["master"]
 
 env:
-  GRAALVM_VERSION: "21.0.7"  # Updated format for graalvm/setup-graalvm action
+  DISTRIBUTION: "graalvm"
 
 jobs:
   checkstyle:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout sources
         uses: actions/checkout@v4
-
-      - name: Setup GraalVM
-        uses: graalvm/setup-graalvm@v1
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          version: ${{ env.GRAALVM_VERSION }}
+          distribution: ${{ env.DISTRIBUTION }}
           java-version: '21'
 
       - name: Setup Gradle
@@ -41,7 +40,7 @@ jobs:
       - name: Setup GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ env.GRAALVM_VERSION }}
+          version: ${{ env.DISTRIBUTION }}
           java-version: '21'
 
       - name: Setup Gradle
