@@ -1,5 +1,6 @@
 ﻿name: Java CI/CD Pipeline with Gradle
 
+
 on:
   push:
     branches: ["master"]
@@ -8,13 +9,12 @@ on:
 
 env:
   DISTRIBUTION: "graalvm"
-  GRADLE_VERSION: "8.7"
 
 jobs:
-  install:
+
+
+  checkstyle:
     runs-on: ubuntu-latest
-    outputs:
-      gradle-cache-key: ${{ steps.cache.outputs.cache-primary-key }}
     steps:
       - name: Checkout sources
         uses: actions/checkout@v4
@@ -27,40 +27,7 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: ${{ env.GRADLE_VERSION }}
 
-      - name: Cache Gradle dependencies
-        id: cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
-      - name: Make gradlew executable
-        run: chmod +x ./gradlew
-
-      - name: Check gradle version
-        run: ./gradlew --version
-
-  checkstyle:
-    needs: install
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout sources
-        uses: actions/checkout@v4
-
-      - name: Restore Java and Gradle setup
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ needs.install.outputs.gradle-cache-key }}
 
       - name: Run Checkstyle checks
         run: ./gradlew checkstyleMain checkstyleTest
@@ -72,13 +39,14 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v4
 
-      - name: Restore Java and Gradle setup
-        uses: actions/cache@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
         with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ needs.install.outputs.gradle-cache-key }}
+          distribution: ${{ env.DISTRIBUTION }}
+          java-version: '21'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Run tests
         run: ./gradlew test
