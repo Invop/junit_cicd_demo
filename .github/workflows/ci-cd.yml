@@ -3,9 +3,9 @@
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
   pull_request:
-    branches: ["main"]
+    branches: ["master"]
 
 env:
   GRAALVM_VERSION: "21.0.7"  # Updated format for graalvm/setup-graalvm action
