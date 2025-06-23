@@ -1,0 +1,1 @@
+rootProject.name = "junit_cicd_demo"
