@@ -13,6 +13,7 @@ repositories {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
 }
 checkstyle {
     toolVersion = "10.12.4"
@@ -20,7 +21,13 @@ checkstyle {
 }
 
 tasks.test {
+
     useJUnitPlatform()
+
+    jvmArgs = listOf(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
 }
 tasks.jar {
     manifest {
